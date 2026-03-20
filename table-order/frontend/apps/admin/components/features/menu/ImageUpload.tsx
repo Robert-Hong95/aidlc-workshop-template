@@ -4,7 +4,12 @@ export function ImageUpload({ value, onChange }: {
   value?: string;
   onChange: (file: File | null, preview: string | null) => void;
 }) {
-  const [preview, setPreview] = useState<string | null>(value ?? null);
+  const resolveUrl = (url?: string) => {
+    if (!url) return null;
+    if (url.startsWith('data:') || url.startsWith('http')) return url;
+    return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}${url}`;
+  };
+  const [preview, setPreview] = useState<string | null>(resolveUrl(value));
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

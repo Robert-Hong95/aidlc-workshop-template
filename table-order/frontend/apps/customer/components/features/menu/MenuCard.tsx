@@ -5,6 +5,13 @@ import { formatPrice } from '@table-order/shared';
 import type { Menu } from '@table-order/api-client';
 
 const PLACEHOLDER_IMG = '/placeholder-menu.svg';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
+function resolveImageUrl(url: string | null): string {
+  if (!url) return PLACEHOLDER_IMG;
+  if (url.startsWith('http')) return url;
+  return `${API_BASE}${url}`;
+}
 
 export function MenuCard({ menu, onAdd }: {
   menu: Menu;
@@ -13,7 +20,7 @@ export function MenuCard({ menu, onAdd }: {
   return (
     <div className="border rounded-lg overflow-hidden bg-white" data-testid={`menu-card-${menu.id}`}>
       <img
-        src={menu.imageUrl || PLACEHOLDER_IMG}
+        src={resolveImageUrl(menu.imageUrl)}
         alt={menu.name}
         className="w-full h-36 object-cover bg-gray-100"
         loading="lazy"

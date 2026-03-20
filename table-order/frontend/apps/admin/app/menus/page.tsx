@@ -35,10 +35,25 @@ export default function MenuManagePage() {
   const filteredMenus = selectedCategoryId ? menus.filter((m) => m.categoryId === selectedCategoryId) : menus;
 
   const handleSubmit = async (data: { name: string; price: number; categoryId: number; description?: string; imageUrl?: string }) => {
+    let imageUrl = data.imageUrl;
+    if (imageFile && storeId) {
+      const token = useAdminAuthStore.getState().accessToken;
+      if (token) {
+        const form = new FormData();
+        form.append('file', imageFile);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/files/upload`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form,
+        });
+        const json = await res.json();
+        if (json.success) imageUrl = `/api/files/${json.data}`;
+      }
+    }
     if (editingMenu) {
-      await updateMenu(editingMenu.id, data);
+      await updateMenu(editingMenu.id, { ...data, imageUrl });
     } else {
-      await createMenu({ ...data });
+      await createMenu({ ...data, imageUrl });
     }
     setShowForm(false);
     setEditingMenu(null);

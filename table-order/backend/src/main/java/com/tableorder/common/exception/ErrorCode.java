@@ -14,6 +14,8 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다"),
     LOGIN_ATTEMPTS_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "로그인 시도 횟수를 초과했습니다"),
 
+    DUPLICATE_ADMIN(HttpStatus.CONFLICT, "이미 존재하는 관리자입니다"),
+
     // Store
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "매장을 찾을 수 없습니다"),
     DUPLICATE_STORE_CODE(HttpStatus.CONFLICT, "이미 존재하는 매장 코드입니다"),
@@ -26,11 +28,13 @@ public enum ErrorCode {
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴를 찾을 수 없습니다"),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다"),
+    CATEGORY_HAS_MENUS(HttpStatus.CONFLICT, "메뉴가 존재하는 카테고리는 삭제할 수 없습니다"),
     INVALID_PRICE(HttpStatus.BAD_REQUEST, "유효하지 않은 가격입니다"),
 
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다"),
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 주문 상태 변경입니다"),
+    HAS_INCOMPLETE_ORDERS(HttpStatus.CONFLICT, "미완료 주문이 존재하여 세션을 종료할 수 없습니다"),
 
     // File
     FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다"),

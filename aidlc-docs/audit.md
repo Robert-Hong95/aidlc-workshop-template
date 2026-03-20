@@ -150,3 +150,187 @@ AI-DLC 워크플로우를 시작해봅시다."
 **Context**: Parallel work system prepared. Backend: Unit 1-4 BE, Frontend: Unit 5-8 FE
 
 ---
+
+## Session Resumption - Backend Track
+**Timestamp**: 2026-03-20T13:26:37+09:00
+**User Input**: "다른 컴퓨터에서 작업하던거 pull받아왔어. 내가 맡은 역할은 백엔드 로직이야. 유닛 분석해서 이어서 작업 진행할 부분 체크해줘"
+**AI Response**: 세션 재개. 프로젝트 상태 분석 완료. Backend Track 4개 Unit 모두 미시작 상태 확인.
+**Context**: Session continuity - Backend developer resuming work. Unit 0 Foundation complete, Backend Units 1-4 all pending.
+
+---
+
+## CONSTRUCTION - Unit 1-BE Functional Design (Questions)
+**Timestamp**: 2026-03-20T13:29:40+09:00
+**User Input**: "진행"
+**AI Response**: Unit 1-BE (Auth API) Functional Design 시작. 5개 질문 생성하여 plan 파일에 저장.
+**Context**: Construction Phase - Unit 1-BE Functional Design Step 3 (Questions). 관리자 로그인 시도 제한, 초기 계정 생성, 테이블 토큰 만료, JWT 클레임, 로그아웃 방식에 대한 질문.
+
+---
+
+## CONSTRUCTION - Unit 1-BE Functional Design (Artifacts Generated)
+**Timestamp**: 2026-03-20T13:32:04+09:00
+**User Input**: "작성완료"
+**AI Response**: 답변 분석 완료 (모순/모호함 없음). Functional Design 아티팩트 3개 생성: domain-entities.md, business-logic-model.md, business-rules.md
+**Context**: Q1:C(로그인 제한 없음), Q2:C(seed+등록API), Q3:C(테이블 토큰 만료 없음), Q4:B(표준 클레임), Q5:A(클라이언트 측 로그아웃)
+
+---
+
+## CONSTRUCTION - Unit 1-BE Functional Design (Approved)
+**Timestamp**: 2026-03-20T13:34:42+09:00
+**User Input**: "Continue"
+**AI Response**: Functional Design 승인 완료. Code Generation 단계로 진행.
+**Context**: Unit 1-BE Functional Design approved. Proceeding to Code Generation (NFR stages skipped per parallel-work-guide - Auth unit is simple enough).
+
+---
+
+## CONSTRUCTION - Unit 1-BE TDD Planning (Part 1)
+**Timestamp**: 2026-03-20T13:35:25+09:00
+**User Input**: "A"
+**AI Response**: TDD 방식 선택. 3개 TDD plan 파일 생성: contracts.md (3 layers), test-plan.md (17 test cases), tdd-code-generation-plan.md (3 steps + seed data).
+**Context**: Code Generation - TDD selected. Part 1 Planning complete. Awaiting approval.
+
+---
+
+## CONSTRUCTION - Unit 1-BE TDD Plan Approved
+**Timestamp**: 2026-03-20T13:37:12+09:00
+**User Input**: "Approve & Start TDD"
+**AI Response**: TDD Plan 승인. Part 2 TDD Generation 시작. Step 0부터 진행.
+**Context**: Code Generation - TDD Part 2 starting.
+
+---
+
+## CONSTRUCTION - Unit 1-BE TDD Code Generation Complete
+**Timestamp**: 2026-03-20T13:47:00+09:00
+**AI Response**: TDD Code Generation 완료. Step 0 (Skeleton), Step 1 (Service TDD 11 tests), Step 2 (Controller TDD 6 tests), Step 3 (Seed data + docs). 전체 17 tests 통과.
+**Context**: Unit 1-BE Auth API - TDD complete. All 17 tests passing. Seed data added to init.sql.
+
+---
+
+## CONSTRUCTION - Unit 1-BE Code Generation Approved
+**Timestamp**: 2026-03-20T13:48:51+09:00
+**User Input**: "계속해"
+**AI Response**: Unit 1-BE 승인. Unit 2-BE (Store/Table API) Functional Design 시작.
+**Context**: Unit 1-BE approved. Proceeding to Unit 2-BE.
+
+---
+
+## CONSTRUCTION - Unit 2-BE Functional Design Complete
+**Timestamp**: 2026-03-20T13:52:35+09:00
+**User Input**: "작성완료"
+**AI Response**: 답변 분석 완료. Functional Design 아티팩트 3개 생성. Q1:A(관리자 비밀번호 입력), Q2:A(JSON 직렬화+삭제), Q3:C(매장 CRUD 전체).
+**Context**: Unit 2-BE Functional Design complete. 9 API endpoints designed.
+
+---
+
+## CONSTRUCTION - Unit 2-BE TDD Code Generation Complete
+**Timestamp**: 2026-03-20T13:59:00+09:00
+**User Input**: "컨티뉴"
+**AI Response**: Unit 2-BE TDD 완료. StoreService(7 tests), TableService(6 tests), Controllers(6 tests). 전체 19 tests 통과. 누적 37 tests.
+**Context**: Unit 2-BE Store/Table API - TDD complete. 9 API endpoints implemented.
+
+---
+
+## CONSTRUCTION - Unit 2-BE Approval & Unit 3-BE Start
+**Timestamp**: 2026-03-20T14:01:27+09:00
+**User Input**: "Continue to Next Stage"
+**AI Response**: Unit 2-BE 승인 확인. Unit 3-BE Menu API 시작.
+**Context**: Unit 2-BE approved. Proceeding to Unit 3-BE Menu API.
+
+---
+
+## CONSTRUCTION - Unit 3-BE Functional Design
+**Timestamp**: 2026-03-20T14:04:30+09:00
+**User Input**: "작성완료" (Q1:A, Q2:A, Q3:A/A, Q4:A, Q5:A, Q6:B)
+**AI Response**: Functional Design 문서 생성 완료. 카테고리 전체 CRUD, 가격 100~1M, JPG/PNG 5MB, Soft delete, 단일 API 조회, 배열 순서 변경.
+**Context**: Unit 3-BE Menu API functional design complete.
+
+---
+
+## CONSTRUCTION - Unit 3-BE Functional Design Approval
+**Timestamp**: 2026-03-20T14:05:41+09:00
+**User Input**: "Continue to Next Stage"
+**AI Response**: Functional Design 승인. TDD Code Generation 진행.
+**Context**: Unit 3-BE functional design approved. Proceeding to TDD code generation.
+
+---
+
+## CONSTRUCTION - Unit 3-BE TDD Plan Approval
+**Timestamp**: 2026-03-20T14:07:09+09:00
+**User Input**: "승인"
+**AI Response**: TDD plan 승인. Step 0 skeleton 생성 시작.
+**Context**: Unit 3-BE TDD plan approved. Starting code generation.
+
+---
+
+## CONSTRUCTION - Unit 3-BE TDD Code Generation Complete
+**Timestamp**: 2026-03-20T14:11:00+09:00
+**User Input**: "승인"
+**AI Response**: Unit 3-BE TDD 완료. MenuService(15), FileStorageService(2), Controllers(8). 전체 25 tests 통과. 누적 62 tests.
+**Context**: Unit 3-BE Menu API - TDD complete. 13 API endpoints implemented.
+
+---
+
+## CONSTRUCTION - Unit 3-BE Approval & Unit 4-BE Start
+**Timestamp**: 2026-03-20T14:11:48+09:00
+**User Input**: "Continue to Next Stage"
+**AI Response**: Unit 3-BE 승인. Unit 4-BE Order+SSE API 시작.
+**Context**: Unit 3-BE approved. Proceeding to Unit 4-BE.
+
+---
+
+## CONSTRUCTION - Unit 4-BE Functional Design
+**Timestamp**: 2026-03-20T14:14:51+09:00
+**User Input**: "Continue to Next Stage" (Q1:A, Q2:C, Q3:A, Q4:A, Q5:A, Q6:B)
+**AI Response**: Functional Design 문서 생성 완료. 3단계 상태, 관리자+고객 삭제, 15초 heartbeat, 10분 timeout, 자동 세션, 미완료 차단.
+**Context**: Unit 4-BE Order+SSE functional design complete.
+
+---
+
+## CONSTRUCTION - Unit 4-BE Functional Design Approval
+**Timestamp**: 2026-03-20T14:15:44+09:00
+**User Input**: "Continue to Next Stage"
+**AI Response**: Functional Design 승인. TDD Code Generation 진행.
+**Context**: Unit 4-BE functional design approved.
+
+---
+
+## CONSTRUCTION - Unit 4-BE TDD Plan Approval
+**Timestamp**: 2026-03-20T14:18:04+09:00
+**User Input**: "ok"
+**AI Response**: TDD plan 승인. Step 0 skeleton 생성 시작.
+**Context**: Unit 4-BE TDD plan approved.
+
+---
+
+## CONSTRUCTION - Unit 4-BE TDD Code Generation Complete
+**Timestamp**: 2026-03-20T14:23:30+09:00
+**User Input**: "ok"
+**AI Response**: Unit 4-BE TDD 완료. OrderService(10), SseEmitter(2), endSession(2), Controllers(8). 전체 22 tests. 누적 84 tests. All BE Units Complete.
+**Context**: Unit 4-BE Order+SSE API - TDD complete. 8 API endpoints. All backend units (1-4) complete.
+
+---
+
+## CONSTRUCTION - Unit 4-BE Approval & Build and Test Start
+**Timestamp**: 2026-03-20T14:25:11+09:00
+**User Input**: "Continue to Next Stage"
+**AI Response**: Unit 4-BE 승인. Build and Test 단계 진행.
+**Context**: All BE units approved. Proceeding to Build and Test.
+
+---
+
+## CONSTRUCTION - Build and Test Complete
+**Timestamp**: 2026-03-20T14:26:00+09:00
+**Build Status**: ✅ Success
+**Test Status**: ✅ 84/84 Pass
+**Files Generated**: build-instructions.md, unit-test-instructions.md, integration-test-instructions.md, build-and-test-summary.md
+**Context**: Build and Test stage complete. All BE units built and tested successfully.
+
+---
+
+## CONSTRUCTION - Build and Test Approval
+**Timestamp**: 2026-03-20T14:27:23+09:00
+**User Input**: "ㅇㅇ 그래"
+**AI Response**: Build and Test 승인. Operations phase는 placeholder. CONSTRUCTION phase 완료.
+**Context**: Build and Test approved. All CONSTRUCTION phase work complete for backend.
+
+---

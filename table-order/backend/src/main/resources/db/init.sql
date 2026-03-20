@@ -57,6 +57,7 @@ CREATE TABLE menus (
     description TEXT NULL,
     image_url VARCHAR(500) NULL,
     display_order INT NOT NULL DEFAULT 0,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at DATETIME NOT NULL DEFAULT NOW(),
     updated_at DATETIME NOT NULL DEFAULT NOW() ON UPDATE NOW(),
     FOREIGN KEY (store_id) REFERENCES stores(id),
@@ -98,3 +99,11 @@ CREATE TABLE order_history (
     ordered_at DATETIME NOT NULL,
     completed_at DATETIME NOT NULL DEFAULT NOW()
 );
+
+-- Seed Data
+-- Password for all seed accounts: "pass1234"
+-- BCrypt hash generated with BCryptPasswordEncoder (cost=10)
+INSERT INTO stores (store_code, name) VALUES ('STORE01', '테스트매장');
+INSERT INTO admins (store_id, username, password) VALUES (1, 'admin', '$2a$10$dXJ3SW6G7P50lGmMQgel6uVktDQd6Si.gC4/F1pOPzVgdOHbykqsC');
+INSERT INTO store_tables (store_id, table_no, password) VALUES (1, 1, '$2a$10$dXJ3SW6G7P50lGmMQgel6uVktDQd6Si.gC4/F1pOPzVgdOHbykqsC');
+INSERT INTO store_tables (store_id, table_no, password) VALUES (1, 2, '$2a$10$dXJ3SW6G7P50lGmMQgel6uVktDQd6Si.gC4/F1pOPzVgdOHbykqsC');

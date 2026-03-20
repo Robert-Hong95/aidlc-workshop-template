@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import { useAdminAuthStore } from '../stores/auth-store';
 import { useLoginLockout } from './useLoginLockout';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export function useAdminAuth() {
   const store = useAdminAuthStore();
   const lockout = useLoginLockout();
@@ -16,8 +18,15 @@ export function useAdminAuth() {
     setIsLoading(true);
     setError(null);
     try {
-      // API integration deferred — will use api-client when backend is ready
-      throw new Error('API not connected');
+      const res = await fetch(`${API}/api/admin/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storeCode, username, password }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || '로그인에 실패했습니다');
+      lockout.resetAttempts();
+      store.login(json.data);
     } catch (e: any) {
       lockout.recordFailure();
       setError(e.message || '로그인에 실패했습니다');
@@ -26,9 +35,7 @@ export function useAdminAuth() {
     }
   }, [store, lockout]);
 
-  const logout = useCallback(() => {
-    store.logout();
-  }, [store]);
+  const logout = useCallback(() => { store.logout(); }, [store]);
 
   return {
     login, logout,

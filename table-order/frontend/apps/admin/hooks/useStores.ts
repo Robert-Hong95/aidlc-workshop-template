@@ -1,20 +1,34 @@
-// Hooks — API 연동 deferred, 타입 정의만
-// 실제 React Query 연동은 Backend 완성 후
-
 import { useState, useCallback } from 'react';
 import type { Store } from '@table-order/api-client';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export function useStores() {
-  const [stores] = useState<Store[]>([]);
-  const [isLoading] = useState(false);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const createStore = useCallback(async (_data: { name: string; address?: string; phone?: string }) => {
-    // API deferred
+  const fetchStores = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API}/api/admin/stores`);
+      const json = await res.json();
+      if (json.success) setStores(json.data || []);
+    } finally { setIsLoading(false); }
   }, []);
 
-  const updateStore = useCallback(async (_id: number, _data: { name?: string; address?: string; phone?: string }) => {
-    // API deferred
+  const createStore = useCallback(async (data: { name: string; address?: string; phone?: string }) => {
+    await fetch(`${API}/api/admin/stores`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ storeCode: data.name.toUpperCase().replace(/\s/g, ''), name: data.name }),
+    });
   }, []);
 
-  return { stores, isLoading, createStore, updateStore };
+  const updateStore = useCallback(async (id: number, data: { name?: string }) => {
+    await fetch(`${API}/api/admin/stores/${id}`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: data.name }),
+    });
+  }, []);
+
+  return { stores, isLoading, fetchStores, createStore, updateStore };
 }

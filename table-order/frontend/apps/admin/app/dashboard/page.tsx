@@ -1,16 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Spinner, ConfirmDialog } from '@table-order/ui';
+import { AdminLayout } from '../../components/layout/AdminLayout';
 import { TableCardGrid } from '../../components/features/dashboard/TableCardGrid';
 import { OrderDetailModal } from '../../components/features/dashboard/OrderDetailModal';
 import { useDashboard } from '../../hooks/useDashboard';
+import { useAdminAuthStore } from '../../stores/auth-store';
+import { redirect } from 'next/navigation';
 import type { DashboardOrder } from '../../components/features/dashboard/OrderPreview';
 
 export default function DashboardPage() {
-  const { tables, isLoading, changeOrderStatus, deleteOrder } = useDashboard();
+  const { tables, isLoading, fetchDashboard, changeOrderStatus, deleteOrder } = useDashboard();
+  const storeId = useAdminAuthStore((s) => s.storeId);
+  const isAuthenticated = useAdminAuthStore((s) => s.isAuthenticated);
   const [selectedOrder, setSelectedOrder] = useState<DashboardOrder | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    useAdminAuthStore.getState().hydrate();
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (storeId) fetchDashboard(storeId);
+  }, [storeId, fetchDashboard]);
+
+  if (!hydrated) {
+    return <div className="flex items-center justify-center min-h-screen"><Spinner size="lg" /></div>;
+  }
+
+  if (!isAuthenticated) {
+    redirect('/login');
+  }
 
   const handleTableClick = (tableId: number) => {
     const table = tables.find((t) => t.tableId === tableId);
@@ -22,35 +45,38 @@ export default function DashboardPage() {
       await deleteOrder(deleteTarget);
       setDeleteTarget(null);
       setSelectedOrder(null);
+      if (storeId) fetchDashboard(storeId);
     }
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-[400px]"><Spinner size="lg" /></div>;
+    return <AdminLayout><div className="flex items-center justify-center min-h-[400px]"><Spinner size="lg" /></div></AdminLayout>;
   }
 
   return (
-    <div data-testid="dashboard-page">
-      <h1 className="text-xl font-bold text-[#232F3E] mb-4">주문 대시보드</h1>
-      <TableCardGrid
-        tables={tables}
-        onChangeStatus={changeOrderStatus}
-        onTableClick={handleTableClick}
-      />
-      <OrderDetailModal
-        isOpen={!!selectedOrder}
-        order={selectedOrder}
-        onClose={() => setSelectedOrder(null)}
-        onChangeStatus={changeOrderStatus}
-        onDelete={(id) => setDeleteTarget(id)}
-      />
-      <ConfirmDialog
-        isOpen={deleteTarget !== null}
-        title="주문 삭제"
-        message="이 주문을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
-        onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
-    </div>
+    <AdminLayout>
+      <div data-testid="dashboard-page">
+        <h1 className="text-xl font-bold text-[#232F3E] mb-4">주문 대시보드</h1>
+        <TableCardGrid
+          tables={tables}
+          onChangeStatus={changeOrderStatus}
+          onTableClick={handleTableClick}
+        />
+        <OrderDetailModal
+          isOpen={!!selectedOrder}
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onChangeStatus={changeOrderStatus}
+          onDelete={(id) => setDeleteTarget(id)}
+        />
+        <ConfirmDialog
+          isOpen={deleteTarget !== null}
+          title="주문 삭제"
+          message="이 주문을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+          onConfirm={handleDelete}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      </div>
+    </AdminLayout>
   );
 }

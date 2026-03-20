@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useTableAuthStore } from '../stores/auth-store';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export function useTableAuth() {
   const store = useTableAuthStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -10,8 +12,14 @@ export function useTableAuth() {
     setIsLoading(true);
     setError(null);
     try {
-      // API integration deferred
-      throw new Error('API not connected');
+      const res = await fetch(`${API}/api/customer/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storeCode, tableNo, password }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || '로그인에 실패했습니다');
+      store.login(json.data, storeCode);
     } catch (e: any) {
       setError(e.message || '로그인에 실패했습니다');
     } finally {
@@ -21,29 +29,10 @@ export function useTableAuth() {
 
   const autoLogin = useCallback(async () => {
     store.hydrate();
-    if (!store.refreshToken) return false;
-    try {
-      // Token refresh deferred
-      return store.isAuthenticated;
-    } catch {
-      store.logout();
-      return false;
-    }
+    return store.isAuthenticated;
   }, [store]);
 
-  const verifyPassword = useCallback(async (password: string) => {
-    setIsLoading(true);
-    try {
-      // API integration deferred
-      throw new Error('API not connected');
-    } catch (e: any) {
-      setError(e.message);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
+  const verifyPassword = useCallback(async (_password: string) => false, []);
   const logout = useCallback(() => { store.logout(); }, [store]);
 
   return { login, logout, verifyPassword, autoLogin, isAuthenticated: store.isAuthenticated, isLoading, error };

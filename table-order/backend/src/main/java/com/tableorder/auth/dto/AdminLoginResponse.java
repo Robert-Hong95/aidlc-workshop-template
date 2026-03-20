@@ -1,3 +1,3 @@
 package com.tableorder.auth.dto;
 
-public record AdminLoginResponse(String token, Long storeId, String storeName, String username) {}
+public record AdminLoginResponse(String accessToken, Long storeId, String storeName, Long adminId, String username) {}

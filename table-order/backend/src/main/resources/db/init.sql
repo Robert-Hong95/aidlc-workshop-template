@@ -4,6 +4,9 @@ CREATE DATABASE IF NOT EXISTS table_order
 
 USE table_order;
 
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 CREATE TABLE stores (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     store_code VARCHAR(50) NOT NULL UNIQUE,
@@ -104,6 +107,24 @@ CREATE TABLE order_history (
 -- Password for all seed accounts: "pass1234"
 -- BCrypt hash generated with BCryptPasswordEncoder (cost=10)
 INSERT INTO stores (store_code, name) VALUES ('STORE01', '테스트매장');
-INSERT INTO admins (store_id, username, password) VALUES (1, 'admin', '$2a$10$dXJ3SW6G7P50lGmMQgel6uVktDQd6Si.gC4/F1pOPzVgdOHbykqsC');
-INSERT INTO store_tables (store_id, table_no, password) VALUES (1, 1, '$2a$10$dXJ3SW6G7P50lGmMQgel6uVktDQd6Si.gC4/F1pOPzVgdOHbykqsC');
-INSERT INTO store_tables (store_id, table_no, password) VALUES (1, 2, '$2a$10$dXJ3SW6G7P50lGmMQgel6uVktDQd6Si.gC4/F1pOPzVgdOHbykqsC');
+INSERT INTO admins (store_id, username, password) VALUES (1, 'admin', '$2a$10$8w0PR4oWNhD8zCTVn0yRs.DcuG9YT3cAHy4WqMAdFBftqoHz/FSYq');
+INSERT INTO store_tables (store_id, table_no, password) VALUES (1, 1, '$2a$10$8w0PR4oWNhD8zCTVn0yRs.DcuG9YT3cAHy4WqMAdFBftqoHz/FSYq');
+INSERT INTO store_tables (store_id, table_no, password) VALUES (1, 2, '$2a$10$8w0PR4oWNhD8zCTVn0yRs.DcuG9YT3cAHy4WqMAdFBftqoHz/FSYq');
+
+-- Categories
+INSERT INTO categories (store_id, name, display_order) VALUES (1, '커피', 0);
+INSERT INTO categories (store_id, name, display_order) VALUES (1, '음료', 1);
+INSERT INTO categories (store_id, name, display_order) VALUES (1, '디저트', 2);
+INSERT INTO categories (store_id, name, display_order) VALUES (1, '식사', 3);
+
+-- Menus
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 1, '아메리카노', 4500, '깊고 진한 에스프레소', 0, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 1, '카페라떼', 5000, '부드러운 우유와 에스프레소', 1, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 1, '카푸치노', 5000, '풍성한 우유 거품', 2, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 2, '녹차라떼', 5500, '고소한 녹차와 우유', 0, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 2, '자몽에이드', 6000, '상큼한 자몽 에이드', 1, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 2, '레몬에이드', 5500, '시원한 레몬 에이드', 2, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 3, '치즈케이크', 7000, '뉴욕 스타일 치즈케이크', 0, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 3, '티라미수', 7500, '이탈리안 티라미수', 1, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 4, '클럽샌드위치', 9000, '치킨, 베이컨, 야채', 0, false);
+INSERT INTO menus (store_id, category_id, name, price, description, display_order, deleted) VALUES (1, 4, '파스타', 12000, '크림 파스타', 1, false);

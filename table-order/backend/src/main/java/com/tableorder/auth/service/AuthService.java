@@ -44,7 +44,7 @@ public class AuthService {
         }
         String token = jwtTokenProvider.createToken(admin.getId().toString(),
                 Map.of("role", "ADMIN", "storeId", store.getId(), "username", admin.getUsername()));
-        return new AdminLoginResponse(token, store.getId(), store.getName(), admin.getUsername());
+        return new AdminLoginResponse(token, store.getId(), store.getName(), admin.getId(), admin.getUsername());
     }
 
     public AdminRegisterResponse registerAdmin(AdminRegisterRequest request) {

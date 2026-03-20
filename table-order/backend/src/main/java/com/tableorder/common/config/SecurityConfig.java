@@ -24,11 +24,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/admin/auth/**").permitAll()
                 .requestMatchers("/api/customer/auth/**").permitAll()
+                .requestMatchers("/api/customer/stores/*/menus").permitAll()
+                .requestMatchers("/api/customer/sse/**").permitAll()
+                .requestMatchers("/api/admin/sse/**").permitAll()
+                .requestMatchers("/api/auth/refresh").permitAll()
+                .requestMatchers("/api/stores").permitAll()
                 .requestMatchers("/api/files/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )

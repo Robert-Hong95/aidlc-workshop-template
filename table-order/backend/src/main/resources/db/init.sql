@@ -17,6 +17,8 @@ CREATE TABLE admins (
     store_id BIGINT NOT NULL,
     username VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    login_attempts INT NOT NULL DEFAULT 0,
+    locked_until DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT NOW(),
     UNIQUE KEY uk_admin_store_username (store_id, username),
     FOREIGN KEY (store_id) REFERENCES stores(id)
@@ -56,6 +58,7 @@ CREATE TABLE menus (
     price INT NOT NULL,
     description TEXT NULL,
     image_url VARCHAR(500) NULL,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INT NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT NOW(),
     updated_at DATETIME NOT NULL DEFAULT NOW() ON UPDATE NOW(),

@@ -19,7 +19,9 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:my-super-secret-key-for-jwt-token-generation-min-256-bits}
-  expiration: ${JWT_EXPIRATION:57600000}
+  access-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:57600000}
+  qr-expiration: ${JWT_QR_EXPIRATION:600000}
 
 file:
   upload-dir: ${FILE_UPLOAD_DIR:./uploads}

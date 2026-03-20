@@ -1,28 +1,34 @@
-import { useState, useCallback } from 'react';
-import type { OrderData } from '../components/features/order/OrderCard';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { createOrder, getOrdersByTable, createSseConnection } from '@table-order/api-client';
+import { apiClient, API_BASE } from '../lib/api';
+import { useTableAuthStore } from '../stores/auth-store';
+import type { OrderItemRequest } from '@table-order/api-client';
 
 export function useOrders() {
-  const [orders, setOrders] = useState<OrderData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const qc = useQueryClient();
+  const storeId = useTableAuthStore((s) => s.storeId);
+  const tableId = useTableAuthStore((s) => s.tableId);
 
-  const fetchOrders = useCallback(async (_sessionId: number) => {
-    setIsLoading(true);
-    try {
-      // API deferred
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ['orders', storeId, tableId],
+    queryFn: () => getOrdersByTable(apiClient, storeId!, tableId!),
+    enabled: !!storeId && !!tableId,
+  });
 
-  const createOrder = useCallback(async (_data: { storeId: number; tableId: number; items: { menuId: number; menuName: string; quantity: number; price: number }[] }): Promise<{ orderNo: string } | null> => {
-    setIsLoading(true);
-    try {
-      // API deferred
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  // SSE for real-time order status updates
+  useEffect(() => {
+    if (!storeId || !tableId) return;
+    const disconnect = createSseConnection(API_BASE, `/api/customer/stores/${storeId}/tables/${tableId}/sse`, {
+      onMessage: () => { qc.invalidateQueries({ queryKey: ['orders', storeId, tableId] }); },
+    });
+    return disconnect;
+  }, [storeId, tableId, qc]);
 
-  return { orders, isLoading, fetchOrders, createOrder };
+  const createMut = useMutation({
+    mutationFn: (items: OrderItemRequest[]) => createOrder(apiClient, storeId!, tableId!, { items }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['orders', storeId, tableId] }),
+  });
+
+  return { orders, isLoading, createOrder: createMut.mutateAsync };
 }

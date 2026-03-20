@@ -12,7 +12,6 @@ export function StoreList({ stores, onEdit }: {
           <tr>
             <th className="px-4 py-2 text-left">매장명</th>
             <th className="px-4 py-2 text-left">코드</th>
-            <th className="px-4 py-2 text-left">주소</th>
             <th className="px-4 py-2 text-right">관리</th>
           </tr>
         </thead>
@@ -20,8 +19,7 @@ export function StoreList({ stores, onEdit }: {
           {stores.map((store) => (
             <tr key={store.id} className="border-t">
               <td className="px-4 py-2">{store.name}</td>
-              <td className="px-4 py-2 text-gray-500">{store.code}</td>
-              <td className="px-4 py-2 text-gray-500">{store.address ?? '-'}</td>
+              <td className="px-4 py-2 text-gray-500">{store.storeCode}</td>
               <td className="px-4 py-2 text-right">
                 <Button variant="secondary" size="sm" onClick={() => onEdit(store)} data-testid="store-edit-btn">수정</Button>
               </td>

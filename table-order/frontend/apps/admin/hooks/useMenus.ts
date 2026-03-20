@@ -1,34 +1,44 @@
-import { useState, useCallback } from 'react';
-import type { Menu, CreateMenuRequest, UpdateMenuRequest } from '@table-order/api-client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getMenus, createMenu, updateMenu, deleteMenu, reorderMenus } from '@table-order/api-client';
+import { apiClient } from '../lib/api';
+import { useAdminAuthStore } from '../stores/auth-store';
+import type { CreateMenuRequest, UpdateMenuRequest } from '@table-order/api-client';
 
 export function useMenus() {
-  const [menus, setMenus] = useState<Menu[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const qc = useQueryClient();
+  const storeId = useAdminAuthStore((s) => s.storeId);
 
-  const fetchMenus = useCallback(async (_categoryId: number) => {
-    setIsLoading(true);
-    try {
-      // API deferred
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const { data: menus = [], isLoading } = useQuery({
+    queryKey: ['menus', storeId],
+    queryFn: () => getMenus(apiClient, storeId!),
+    enabled: !!storeId,
+  });
 
-  const createMenu = useCallback(async (_data: CreateMenuRequest) => {
-    // API deferred
-  }, []);
+  const createMut = useMutation({
+    mutationFn: (data: CreateMenuRequest) => createMenu(apiClient, storeId!, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['menus', storeId] }),
+  });
 
-  const updateMenu = useCallback(async (_id: number, _data: UpdateMenuRequest) => {
-    // API deferred
-  }, []);
+  const updateMut = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateMenuRequest }) => updateMenu(apiClient, id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['menus', storeId] }),
+  });
 
-  const deleteMenu = useCallback(async (_id: number) => {
-    // API deferred
-  }, []);
+  const deleteMut = useMutation({
+    mutationFn: (id: number) => deleteMenu(apiClient, id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['menus', storeId] }),
+  });
 
-  const reorderMenus = useCallback(async (_ids: number[]) => {
-    // API deferred
-  }, []);
+  const reorderMut = useMutation({
+    mutationFn: (ids: number[]) => reorderMenus(apiClient, storeId!, { ids }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['menus', storeId] }),
+  });
 
-  return { menus, isLoading, fetchMenus, createMenu, updateMenu, deleteMenu, reorderMenus };
+  return {
+    menus, isLoading,
+    createMenu: createMut.mutateAsync,
+    updateMenu: updateMut.mutateAsync,
+    deleteMenu: deleteMut.mutateAsync,
+    reorderMenus: reorderMut.mutateAsync,
+  };
 }

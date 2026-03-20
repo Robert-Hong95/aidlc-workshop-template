@@ -17,16 +17,16 @@ export function OrderHistoryModal({ isOpen, tableId, onClose, history, isLoading
     <div data-testid="order-history-modal">
       <Modal isOpen={isOpen} onClose={onClose} title="과거 주문 내역" data-testid="history-modal">
         <div className="flex flex-col gap-4">
-          <DatePresets onSelect={onFilterChange} />
+          <DatePresets onSelect={(range) => onFilterChange({ dateFrom: range.from, dateTo: range.to })} />
           {isLoading ? <Spinner /> : (
             <div className="max-h-80 overflow-auto">
               {history.length === 0 ? <p className="text-sm text-gray-500 text-center py-4">내역이 없습니다</p> : (
                 <table className="w-full text-sm">
-                  <thead><tr className="border-b"><th className="py-1 text-left">주문번호</th><th className="py-1 text-left">시각</th><th className="py-1 text-right">금액</th></tr></thead>
+                  <thead><tr className="border-b"><th className="py-1 text-left">ID</th><th className="py-1 text-left">시각</th><th className="py-1 text-right">금액</th></tr></thead>
                   <tbody>
                     {history.map((h) => (
-                      <tr key={h.orderId} className="border-b">
-                        <td className="py-1">{h.orderNo}</td>
+                      <tr key={h.id} className="border-b">
+                        <td className="py-1">{h.id}</td>
                         <td className="py-1">{formatDateTime(h.orderedAt)}</td>
                         <td className="py-1 text-right">{formatPrice(h.totalAmount)}</td>
                       </tr>

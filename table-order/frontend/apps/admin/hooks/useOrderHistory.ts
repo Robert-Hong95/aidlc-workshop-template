@@ -1,11 +1,13 @@
-import { useState, useCallback } from 'react';
-import type { OrderHistoryItem, OrderHistoryFilter } from '@table-order/api-client';
+import { useQuery } from '@tanstack/react-query';
+import { getOrderHistory } from '@table-order/api-client';
+import { apiClient } from '../lib/api';
 
-export function useOrderHistory(_tableId: number) {
-  const today = new Date().toISOString().split('T')[0];
-  const [history] = useState<OrderHistoryItem[]>([]);
-  const [isLoading] = useState(false);
-  const [filter, setFilter] = useState<OrderHistoryFilter>({ from: today, to: today });
+export function useOrderHistory(tableId: number | null, dateFrom: string, dateTo: string) {
+  const { data: history = [], isLoading } = useQuery({
+    queryKey: ['orderHistory', tableId, dateFrom, dateTo],
+    queryFn: () => getOrderHistory(apiClient, tableId!, { dateFrom, dateTo }),
+    enabled: !!tableId && !!dateFrom && !!dateTo,
+  });
 
-  return { history, isLoading, filter, setFilter };
+  return { history, isLoading };
 }

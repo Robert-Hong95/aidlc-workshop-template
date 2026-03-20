@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
+import { tableLogin } from '@table-order/api-client';
 import { useTableAuthStore } from '../stores/auth-store';
+import { apiClient } from '../lib/api';
 
 export function useTableAuth() {
   const store = useTableAuthStore();
@@ -10,8 +12,8 @@ export function useTableAuth() {
     setIsLoading(true);
     setError(null);
     try {
-      // API integration deferred
-      throw new Error('API not connected');
+      const res = await tableLogin(apiClient, { storeCode, tableNo, password });
+      store.login(res, storeCode);
     } catch (e: any) {
       setError(e.message || '로그인에 실패했습니다');
     } finally {
@@ -19,32 +21,12 @@ export function useTableAuth() {
     }
   }, [store]);
 
-  const autoLogin = useCallback(async () => {
+  const autoLogin = useCallback(() => {
     store.hydrate();
-    if (!store.refreshToken) return false;
-    try {
-      // Token refresh deferred
-      return store.isAuthenticated;
-    } catch {
-      store.logout();
-      return false;
-    }
+    return store.isAuthenticated;
   }, [store]);
-
-  const verifyPassword = useCallback(async (password: string) => {
-    setIsLoading(true);
-    try {
-      // API integration deferred
-      throw new Error('API not connected');
-    } catch (e: any) {
-      setError(e.message);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
 
   const logout = useCallback(() => { store.logout(); }, [store]);
 
-  return { login, logout, verifyPassword, autoLogin, isAuthenticated: store.isAuthenticated, isLoading, error };
+  return { login, logout, autoLogin, isAuthenticated: store.isAuthenticated, isLoading, error };
 }

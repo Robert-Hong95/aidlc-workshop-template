@@ -1,20 +1,25 @@
-// Hooks — API 연동 deferred, 타입 정의만
-// 실제 React Query 연동은 Backend 완성 후
-
-import { useState, useCallback } from 'react';
-import type { Store } from '@table-order/api-client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getStores, createStore, updateStore, deleteStore } from '@table-order/api-client';
+import { apiClient } from '../lib/api';
 
 export function useStores() {
-  const [stores] = useState<Store[]>([]);
-  const [isLoading] = useState(false);
+  const qc = useQueryClient();
+  const { data: stores = [], isLoading } = useQuery({ queryKey: ['stores'], queryFn: () => getStores(apiClient) });
 
-  const createStore = useCallback(async (_data: { name: string; address?: string; phone?: string }) => {
-    // API deferred
-  }, []);
+  const createMutation = useMutation({
+    mutationFn: (data: { storeCode: string; name: string }) => createStore(apiClient, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['stores'] }),
+  });
 
-  const updateStore = useCallback(async (_id: number, _data: { name?: string; address?: string; phone?: string }) => {
-    // API deferred
-  }, []);
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: { storeCode?: string; name?: string } }) => updateStore(apiClient, id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['stores'] }),
+  });
 
-  return { stores, isLoading, createStore, updateStore };
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteStore(apiClient, id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['stores'] }),
+  });
+
+  return { stores, isLoading, createStore: createMutation.mutateAsync, updateStore: updateMutation.mutateAsync, deleteStore: deleteMutation.mutateAsync };
 }

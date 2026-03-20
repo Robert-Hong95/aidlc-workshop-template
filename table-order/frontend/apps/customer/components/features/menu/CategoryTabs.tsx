@@ -1,9 +1,7 @@
 'use client';
 
-import type { Category } from '@table-order/api-client';
-
 export function CategoryTabs({ categories, activeId, onSelect }: {
-  categories: Category[];
+  categories: { id: number; name: string }[];
   activeId: number | null;
   onSelect: (id: number) => void;
 }) {

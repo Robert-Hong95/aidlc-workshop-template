@@ -27,16 +27,12 @@ export default function OrderConfirmPage() {
 
   const handleOrder = async () => {
     setError(null);
-    const result = await createOrder({
-      storeId: 0, // API 연동 시 실제 값
-      tableId: 0,
-      items: items.map((i) => ({ menuId: i.menu.id, menuName: i.menu.name, quantity: i.quantity, price: i.menu.price })),
-    });
-    if (result) {
-      setOrderNo(result.orderNo);
+    try {
+      const order = await createOrder(items.map((i) => ({ menuId: i.menu.id, quantity: i.quantity })));
+      setOrderNo(String(order.id));
       clear();
-    } else {
-      setError('주문에 실패했습니다. 다시 시도해주세요.');
+    } catch (e: any) {
+      setError(e.message || '주문에 실패했습니다. 다시 시도해주세요.');
     }
   };
 

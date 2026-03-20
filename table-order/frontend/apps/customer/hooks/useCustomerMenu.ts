@@ -1,22 +1,16 @@
-import { useState, useCallback } from 'react';
-import type { Category, Menu, CustomerMenuResponse } from '@table-order/api-client';
-
-export interface MenuData {
-  categories: (Category & { menus: Menu[] })[];
-}
+import { useQuery } from '@tanstack/react-query';
+import { getCustomerMenus } from '@table-order/api-client';
+import { apiClient } from '../lib/api';
+import { useTableAuthStore } from '../stores/auth-store';
 
 export function useCustomerMenu() {
-  const [menuData, setMenuData] = useState<MenuData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const storeId = useTableAuthStore((s) => s.storeId);
 
-  const fetchMenus = useCallback(async (_storeId: number) => {
-    setIsLoading(true);
-    try {
-      // API deferred
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const { data: menuData, isLoading } = useQuery({
+    queryKey: ['customerMenus', storeId],
+    queryFn: () => getCustomerMenus(apiClient, storeId!),
+    enabled: !!storeId,
+  });
 
-  return { menuData, isLoading, fetchMenus };
+  return { menuData, isLoading };
 }

@@ -4,7 +4,7 @@
 - **Project Name**: 테이블오더 서비스
 - **Project Type**: Greenfield
 - **Start Date**: 2026-03-20T11:02:23+09:00
-- **Current Stage**: CONSTRUCTION - Unit 8-FE Code Generation 완료 (Frontend Track 완료)
+- **Current Stage**: CONSTRUCTION - API 연동 완료 (Frontend ↔ Backend)
 - **Work Mode**: Parallel (Backend + Frontend 분리)
 
 ## Workspace State

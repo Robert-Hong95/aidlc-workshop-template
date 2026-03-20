@@ -150,3 +150,102 @@ AI-DLC 워크플로우를 시작해봅시다."
 **Context**: Parallel work system prepared. Backend: Unit 1-4 BE, Frontend: Unit 5-8 FE
 
 ---
+## CONSTRUCTION - Frontend Track 시작
+**Timestamp**: 2026-03-20T13:29:27+09:00
+**User Input**: "Users/snowwhite/Documents/aidlc-workshop-template/aidlc-docs/parallel-work-guide.md 파일 참고해서 지금부터 프론트 엔드 작업 시작해줘."
+**AI Response**: Frontend 담당자로서 Unit 5-FE (공통 레이아웃 + Auth UI) Functional Design 시작. parallel-work-guide.md, stories.md, components.md, component-methods.md, unit-of-work.md, infrastructure-design.md 로드 완료.
+**Context**: CONSTRUCTION Phase - Frontend Track - Unit 5-FE Functional Design 시작
+
+---
+## CONSTRUCTION - Unit 5-FE Functional Design
+**Timestamp**: 2026-03-20T13:52:16+09:00
+**User Input**: "알겠어. Q3, Q4, Q5에 대해 해석 및 제안대로 진행해줘."
+**AI Response**: 답변 분석 완료. Q3: Apple 스타일 점진적 지연, Q4: Refresh Token 방식 (비밀번호 미저장), Q5: AWS 스타일 색상 테마. Functional Design 산출물 3개 생성 (business-logic-model.md, business-rules.md, frontend-components.md, domain-entities.md).
+**Context**: CONSTRUCTION Phase - Unit 5-FE Functional Design 완료. 사용자 승인 대기.
+
+---
+## CONSTRUCTION - Unit 5-FE Functional Design 승인
+**Timestamp**: 2026-03-20T13:56:00+09:00
+**User Input**: "API 스펙은 나중에 나올거라 front-end 에서 가능한 부분부터 작업 진행할게. 계속 진행해줘."
+**AI Response**: Functional Design 승인 확인. Code Generation 단계로 진행. TDD 선택 프롬프트 표시.
+**Context**: Unit 5-FE Functional Design 승인 완료. Code Generation 시작.
+
+---
+## CONSTRUCTION - Unit 5-FE TDD Planning
+**Timestamp**: 2026-03-20T13:57:09+09:00
+**User Input**: "A"
+**AI Response**: TDD 방식 선택 확인. Contracts, Test Plan (31개 테스트 케이스), TDD Code Generation Plan (8 Steps) 생성 완료. 사용자 승인 대기.
+**Context**: Unit 5-FE TDD Planning 완료. 3개 plan 파일 생성.
+
+---
+## CONSTRUCTION - Unit 5-FE TDD Code Generation Complete
+**Timestamp**: 2026-03-20T14:42:30+09:00
+**User Input**: "Approve" → "앞으로 계속 진행시켜줘" → "앞으로 특이사항 없으면 계속 진행시켜줘."
+**AI Response**: TDD Code Generation Part 2 실행 완료. Step 0~8 전체 완료. 5개 패키지, 60개 테스트 ALL PASSED. LoginPage/SetupPage는 API 연동 시 완성 예정으로 deferred.
+**Context**: Unit 5-FE Code Generation 완료. 다음: Unit 5-FE 승인 → Unit 6-FE 진행.
+
+---
+## CONSTRUCTION - Unit 6-FE Functional Design Start
+**Timestamp**: 2026-03-20T14:43:30+09:00
+**User Input**: "앞으로 특이사항 없으면 계속 진행시켜줘."
+**AI Response**: Unit 5-FE 완료 (60 tests passed). Unit 6-FE Functional Design Plan 생성, 6개 질문 제시.
+**Context**: Unit 6-FE Functional Design Plan 생성 완료. 사용자 답변 대기.
+
+---
+## CONSTRUCTION - Unit 6-FE Functional Design Complete
+**Timestamp**: 2026-03-20T14:49:30+09:00
+**User Input**: "Q1:C Q2:C Q3:C Q4:C Q5:A Q6:A" (파일에 답변 완료)
+**AI Response**: Functional Design 산출물 4개 생성 완료. 사용자 승인 대기.
+**Context**: Unit 6-FE Functional Design 완료.
+
+---
+## CONSTRUCTION - Unit 6-FE Complete
+**Timestamp**: 2026-03-20T14:56:30+09:00
+**User Input**: "계속 진행"
+**AI Response**: Unit 6-FE FD 승인 + TDD Code Generation 완료. api-client 확장 (8 tests), admin store/table 컴포넌트 (17 tests), hooks 3개. 전체 admin 31 tests passed.
+**Context**: Unit 6-FE 완료. 다음: Unit 7-FE (Menu UI).
+
+---
+
+## CONSTRUCTION - Unit 7-FE Code Generation (No Test)
+**Timestamp**: 2026-03-20T15:03:03+09:00
+**User Input**: "지금부터는 테스트코드 작성하지말아줘 시간이 없어." → "이어서 작업해줘"
+**AI Response**: Unit 7-FE Code Generation 진행 (테스트 코드 제외). 생성 파일:
+- packages/api-client/src/files.ts (이미지 업로드 API)
+- apps/admin/components/features/menu/MenuList.tsx
+- apps/admin/hooks/useMenus.ts, useCategories.ts
+- apps/admin/app/menus/page.tsx (MenuManagePage)
+- apps/customer/components/features/menu/CategoryTabs.tsx, MenuCard.tsx, MenuGrid.tsx
+- apps/customer/hooks/useCustomerMenu.ts
+- apps/customer/stores/cart-store.ts
+- apps/customer/app/page.tsx (MenuPage 구현)
+**Context**: Unit 7-FE Code Generation 완료. 테스트 코드 생략 (사용자 요청).
+
+---
+
+## CONSTRUCTION - Unit 8-FE Code Generation (No Test)
+**Timestamp**: 2026-03-20T15:07:14+09:00
+**User Input**: "계속 진행"
+**AI Response**: Unit 8-FE Code Generation 진행 (테스트 코드 제외). 생성 파일:
+
+**api-client 확장:**
+- orders.ts, types/order.ts (주문 CRUD API)
+- sse.ts (SSE 연결 헬퍼, 자동 재연결)
+
+**고객앱 (customer):**
+- components/features/cart/QuantityControl.tsx, CartItem.tsx, CartSummary.tsx
+- components/features/order/OrderStatusBadge.tsx, OrderCard.tsx, OrderSuccessModal.tsx
+- hooks/useOrders.ts
+- app/cart/page.tsx (CartPage)
+- app/order/confirm/page.tsx (OrderConfirmPage)
+- app/orders/page.tsx (OrderListPage)
+
+**관리자앱 (admin):**
+- components/features/dashboard/OrderStatusControl.tsx, OrderPreview.tsx, TableCard.tsx, TableCardGrid.tsx, OrderDetailModal.tsx
+- hooks/useDashboard.ts
+- app/dashboard/page.tsx (DashboardPage)
+- app/page.tsx → /dashboard 리다이렉트
+
+**Context**: Unit 8-FE 완료. Frontend Track 전체 완료 (Unit 5~8 FE).
+
+---

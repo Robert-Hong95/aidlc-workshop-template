@@ -1,16 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Spinner, ConfirmDialog } from '@table-order/ui';
 import { TableCardGrid } from '../../components/features/dashboard/TableCardGrid';
 import { OrderDetailModal } from '../../components/features/dashboard/OrderDetailModal';
 import { useDashboard } from '../../hooks/useDashboard';
+import { useAdminAuthStore } from '../../stores/auth-store';
 import type { DashboardOrder } from '../../components/features/dashboard/OrderPreview';
 
 export default function DashboardPage() {
-  const { tables, isLoading, changeOrderStatus, deleteOrder } = useDashboard();
+  const { tables, isLoading, fetchDashboard, changeOrderStatus, deleteOrder } = useDashboard();
+  const storeId = useAdminAuthStore((s) => s.storeId);
+  const storeName = useAdminAuthStore((s) => s.storeName);
   const [selectedOrder, setSelectedOrder] = useState<DashboardOrder | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+
+  useEffect(() => {
+    useAdminAuthStore.getState().hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (storeId) fetchDashboard(storeId);
+  }, [storeId, fetchDashboard]);
 
   const handleTableClick = (tableId: number) => {
     const table = tables.find((t) => t.tableId === tableId);
@@ -22,7 +33,13 @@ export default function DashboardPage() {
       await deleteOrder(deleteTarget);
       setDeleteTarget(null);
       setSelectedOrder(null);
+      if (storeId) fetchDashboard(storeId);
     }
+  };
+
+  const handleStatusChange = async (orderId: number, status: string) => {
+    await changeOrderStatus(orderId, status);
+    if (storeId) fetchDashboard(storeId);
   };
 
   if (isLoading) {
@@ -31,17 +48,20 @@ export default function DashboardPage() {
 
   return (
     <div data-testid="dashboard-page">
-      <h1 className="text-xl font-bold text-[#232F3E] mb-4">주문 대시보드</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold text-[#232F3E]">주문 대시보드</h1>
+        <span className="text-sm text-gray-500">{storeName}</span>
+      </div>
       <TableCardGrid
         tables={tables}
-        onChangeStatus={changeOrderStatus}
+        onChangeStatus={handleStatusChange}
         onTableClick={handleTableClick}
       />
       <OrderDetailModal
         isOpen={!!selectedOrder}
         order={selectedOrder}
         onClose={() => setSelectedOrder(null)}
-        onChangeStatus={changeOrderStatus}
+        onChangeStatus={handleStatusChange}
         onDelete={(id) => setDeleteTarget(id)}
       />
       <ConfirmDialog

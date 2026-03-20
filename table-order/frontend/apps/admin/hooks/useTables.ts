@@ -1,13 +1,33 @@
 import { useState, useCallback } from 'react';
-import type { StoreTable } from '@table-order/api-client';
+import { useAdminAuthStore } from '../stores/auth-store';
+import { tableApi, type StoreTable } from '@table-order/api-client';
 
-export function useTables(_storeId: number) {
-  const [tables] = useState<StoreTable[]>([]);
-  const [isLoading] = useState(false);
+export function useTables(storeId: number) {
+  const [tables, setTables] = useState<StoreTable[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const token = useAdminAuthStore((s) => s.accessToken);
 
-  const createTable = useCallback(async (_data: { storeId: number; tableNo: number; password: string }) => {}, []);
-  const completeSession = useCallback(async (_tableId: number) => {}, []);
-  const deleteOrder = useCallback(async (_orderId: number) => {}, []);
+  const fetchTables = useCallback(async () => {
+    if (!token || !storeId) return;
+    setIsLoading(true);
+    try { setTables(await tableApi.list(token, storeId)); } finally { setIsLoading(false); }
+  }, [token, storeId]);
 
-  return { tables, isLoading, createTable, completeSession, deleteOrder };
+  const createTable = useCallback(async (data: { storeId: number; tableNo: number; password: string }) => {
+    if (!token) return;
+    await tableApi.setup(token, data.storeId, { tableNo: data.tableNo, password: data.password });
+    await fetchTables();
+  }, [token, fetchTables]);
+
+  const completeSession = useCallback(async (tableId: number) => {
+    if (!token) return;
+    await tableApi.endSession(token, tableId);
+    await fetchTables();
+  }, [token, fetchTables]);
+
+  const deleteOrder = useCallback(async (_orderId: number) => {
+    // handled via order API
+  }, []);
+
+  return { tables, isLoading, fetchTables, createTable, completeSession, deleteOrder };
 }

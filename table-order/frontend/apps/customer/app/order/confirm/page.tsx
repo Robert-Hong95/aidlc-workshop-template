@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button, EmptyState } from '@table-order/ui';
 import { formatPrice } from '@table-order/shared';
 import { useCartStore } from '../../../stores/cart-store';
+import { useTableAuthStore } from '../../../stores/auth-store';
 import { useOrders } from '../../../hooks/useOrders';
 import { OrderSuccessModal } from '../../../components/features/order/OrderSuccessModal';
 
@@ -11,11 +12,16 @@ export default function OrderConfirmPage() {
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.total);
   const clear = useCartStore((s) => s.clear);
+  const storeId = useTableAuthStore((s) => s.storeId);
+  const tableId = useTableAuthStore((s) => s.tableId);
   const { createOrder, isLoading } = useOrders();
   const [orderNo, setOrderNo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { useCartStore.getState().hydrate(); }, []);
+  useEffect(() => {
+    useCartStore.getState().hydrate();
+    useTableAuthStore.getState().hydrate();
+  }, []);
 
   if (items.length === 0 && !orderNo) {
     return (
@@ -28,8 +34,8 @@ export default function OrderConfirmPage() {
   const handleOrder = async () => {
     setError(null);
     const result = await createOrder({
-      storeId: 0, // API 연동 시 실제 값
-      tableId: 0,
+      storeId: storeId ?? 0,
+      tableId: tableId ?? 0,
       items: items.map((i) => ({ menuId: i.menu.id, menuName: i.menu.name, quantity: i.quantity, price: i.menu.price })),
     });
     if (result) {

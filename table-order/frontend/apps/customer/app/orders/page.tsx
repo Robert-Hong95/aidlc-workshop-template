@@ -1,11 +1,22 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Spinner, EmptyState } from '@table-order/ui';
 import { OrderCard } from '../../components/features/order/OrderCard';
 import { useOrders } from '../../hooks/useOrders';
+import { useTableAuthStore } from '../../stores/auth-store';
 
 export default function OrderListPage() {
-  const { orders, isLoading } = useOrders();
+  const { orders, isLoading, fetchOrders } = useOrders();
+  const isAuthenticated = useTableAuthStore((s) => s.isAuthenticated);
+
+  useEffect(() => {
+    useTableAuthStore.getState().hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) fetchOrders();
+  }, [isAuthenticated, fetchOrders]);
 
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen"><Spinner size="lg" /></div>;
@@ -21,6 +32,11 @@ export default function OrderListPage() {
           {orders.map((order) => <OrderCard key={order.id} order={order} />)}
         </div>
       )}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex">
+        <a href="/" className="flex-1 py-3 text-center text-sm font-medium text-gray-500">🍽 메뉴</a>
+        <a href="/cart" className="flex-1 py-3 text-center text-sm font-medium text-gray-500">🛒 장바구니</a>
+        <a href="/orders" className="flex-1 py-3 text-center text-sm font-medium text-[#FF9900]">📋 주문내역</a>
+      </nav>
     </div>
   );
 }

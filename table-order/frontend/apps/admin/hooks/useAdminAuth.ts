@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAdminAuthStore } from '../stores/auth-store';
 import { useLoginLockout } from './useLoginLockout';
+import { authApi } from '@table-order/api-client';
 
 export function useAdminAuth() {
   const store = useAdminAuthStore();
@@ -16,8 +17,13 @@ export function useAdminAuth() {
     setIsLoading(true);
     setError(null);
     try {
-      // API integration deferred — will use api-client when backend is ready
-      throw new Error('API not connected');
+      const res = await authApi.adminLogin(storeCode, username, password);
+      store.login({
+        accessToken: res.token, refreshToken: res.token,
+        storeId: res.storeId, storeName: res.storeName,
+        adminId: 0, username: res.username,
+      });
+      lockout.resetAttempts();
     } catch (e: any) {
       lockout.recordFailure();
       setError(e.message || '로그인에 실패했습니다');
@@ -26,9 +32,7 @@ export function useAdminAuth() {
     }
   }, [store, lockout]);
 
-  const logout = useCallback(() => {
-    store.logout();
-  }, [store]);
+  const logout = useCallback(() => { store.logout(); }, [store]);
 
   return {
     login, logout,

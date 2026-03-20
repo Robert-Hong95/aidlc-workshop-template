@@ -20,7 +20,7 @@ public class OrderHistory {
     @Column(name = "session_id", nullable = false)
     private Long sessionId;
 
-    @Column(name = "order_data", nullable = false, columnDefinition = "JSON")
+    @Column(name = "order_data", nullable = false, columnDefinition = "TEXT")
     private String orderData;
 
     @Column(name = "total_amount", nullable = false)

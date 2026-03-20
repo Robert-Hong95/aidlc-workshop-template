@@ -1,21 +1,24 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/table_order?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul}
-    username: ${SPRING_DATASOURCE_USERNAME:tableorder}
-    password: ${SPRING_DATASOURCE_PASSWORD:tableorder123}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:table_order;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
 jwt:
   secret: ${JWT_SECRET:my-super-secret-key-for-jwt-token-generation-min-256-bits}
@@ -30,7 +33,5 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: method
   api-docs:
     path: /v3/api-docs

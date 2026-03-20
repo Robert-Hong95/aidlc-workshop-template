@@ -1,20 +1,29 @@
-// Hooks — API 연동 deferred, 타입 정의만
-// 실제 React Query 연동은 Backend 완성 후
-
 import { useState, useCallback } from 'react';
-import type { Store } from '@table-order/api-client';
+import { useAdminAuthStore } from '../stores/auth-store';
+import { storeApi, type Store } from '@table-order/api-client';
 
 export function useStores() {
-  const [stores] = useState<Store[]>([]);
-  const [isLoading] = useState(false);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const token = useAdminAuthStore((s) => s.accessToken);
 
-  const createStore = useCallback(async (_data: { name: string; address?: string; phone?: string }) => {
-    // API deferred
-  }, []);
+  const fetchStores = useCallback(async () => {
+    if (!token) return;
+    setIsLoading(true);
+    try { setStores(await storeApi.list(token)); } finally { setIsLoading(false); }
+  }, [token]);
 
-  const updateStore = useCallback(async (_id: number, _data: { name?: string; address?: string; phone?: string }) => {
-    // API deferred
-  }, []);
+  const createStore = useCallback(async (data: { name: string }) => {
+    if (!token) return;
+    await storeApi.create(token, data);
+    await fetchStores();
+  }, [token, fetchStores]);
 
-  return { stores, isLoading, createStore, updateStore };
+  const updateStore = useCallback(async (id: number, data: { name?: string }) => {
+    if (!token) return;
+    await storeApi.update(token, id, data);
+    await fetchStores();
+  }, [token, fetchStores]);
+
+  return { stores, isLoading, fetchStores, createStore, updateStore };
 }

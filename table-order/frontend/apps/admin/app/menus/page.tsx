@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, ConfirmDialog, EmptyState } from '@table-order/ui';
 import { CategoryManager } from '../../components/features/menu/CategoryManager';
 import { MenuList } from '../../components/features/menu/MenuList';
@@ -8,21 +8,33 @@ import { MenuForm } from '../../components/features/menu/MenuForm';
 import { ImageUpload } from '../../components/features/menu/ImageUpload';
 import { useMenus } from '../../hooks/useMenus';
 import { useCategories } from '../../hooks/useCategories';
+import { useAdminAuthStore } from '../../stores/auth-store';
 import type { Menu } from '@table-order/api-client';
 
 export default function MenuManagePage() {
-  const { categories, createCategory, updateCategory, deleteCategory } = useCategories();
-  const { menus, isLoading, createMenu, updateMenu, deleteMenu } = useMenus();
+  const storeId = useAdminAuthStore((s) => s.storeId);
+  const { categories, fetchCategories, createCategory, updateCategory, deleteCategory } = useCategories();
+  const { menus, isLoading, fetchMenus, createMenu, updateMenu, deleteMenu } = useMenus();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [editingMenu, setEditingMenu] = useState<Menu | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  useEffect(() => {
+    useAdminAuthStore.getState().hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (storeId) {
+      fetchCategories(storeId);
+      fetchMenus();
+    }
+  }, [storeId, fetchCategories, fetchMenus]);
+
   const filteredMenus = selectedCategoryId ? menus.filter((m) => m.categoryId === selectedCategoryId) : menus;
 
   const handleSubmit = async (data: { name: string; price: number; categoryId: number; description?: string; imageUrl?: string }) => {
-    // 이미지 업로드는 Backend 연동 시 처리
     if (editingMenu) {
       await updateMenu(editingMenu.id, data);
     } else {
@@ -56,8 +68,8 @@ export default function MenuManagePage() {
         <div className="md:col-span-1">
           <CategoryManager
             categories={categories}
-            onAdd={() => { /* 카테고리 추가 모달 - 추후 구현 */ }}
-            onEdit={(cat) => { /* 카테고리 수정 - 추후 구현 */ }}
+            onAdd={() => {}}
+            onEdit={() => {}}
             onDelete={(id) => deleteCategory(id)}
           />
           <ul className="mt-2 flex flex-col gap-1">

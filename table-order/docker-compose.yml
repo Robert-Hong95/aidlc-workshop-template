@@ -1,0 +1,66 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: table-order-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: table_order
+      MYSQL_USER: tableorder
+      MYSQL_PASSWORD: tableorder123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./backend/src/main/resources/db:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: table-order-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/table_order?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: tableorder
+      SPRING_DATASOURCE_PASSWORD: tableorder123
+      JWT_SECRET: ${JWT_SECRET:-my-super-secret-key-for-jwt-token-generation-min-256-bits}
+      JWT_EXPIRATION: 57600000
+      FILE_UPLOAD_DIR: /app/uploads
+    volumes:
+      - upload-data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  customer:
+    build:
+      context: ./frontend
+      dockerfile: apps/customer/Dockerfile
+    container_name: table-order-customer
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    depends_on:
+      - backend
+
+  admin:
+    build:
+      context: ./frontend
+      dockerfile: apps/admin/Dockerfile
+    container_name: table-order-admin
+    ports:
+      - "3001:3001"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:
+  upload-data:

@@ -473,3 +473,15 @@ AI-DLC 워크플로우를 시작해봅시다."
 **Context**: API 연동 완료. 테스트 파일은 타입 변경으로 인한 에러 있음 (사용자 요청으로 테스트 수정 생략).
 
 ---
+
+## CONSTRUCTION - Build and Test
+**Timestamp**: 2026-03-20T15:38:31+09:00
+**User Input**: "다음 단계 진행"
+**AI Response**: Build and Test 단계 실행.
+- Frontend 빌드: admin ✅ (4 routes), customer ✅ (5 routes)
+- 타입 체크: api-client ✅, admin ✅, customer ✅
+- Backend: Java 미설치로 로컬 빌드 불가, Docker Compose로 빌드 가능
+- 가이드 문서 3개 생성: build-instructions.md, integration-test-instructions.md, build-and-test-summary.md
+**Context**: CONSTRUCTION Phase 전체 완료.
+
+---

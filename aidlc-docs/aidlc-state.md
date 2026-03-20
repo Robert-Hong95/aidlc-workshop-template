@@ -4,7 +4,7 @@
 - **Project Name**: 테이블오더 서비스
 - **Project Type**: Greenfield
 - **Start Date**: 2026-03-20T11:02:23+09:00
-- **Current Stage**: CONSTRUCTION COMPLETE - All BE Units + Build and Test 완료
+- **Current Stage**: CONSTRUCTION - Unit 8-FE Code Generation 완료 (Frontend Track 완료)
 - **Work Mode**: Parallel (Backend + Frontend 분리)
 
 ## Workspace State
@@ -40,10 +40,10 @@
 - [x] Unit 4-BE - Order + SSE API (US-C04, US-C05, US-A02, US-S02) ✅ TDD Complete (22 tests)
 
 #### 🟢 Frontend Track (Branch: feat/frontend)
-- [ ] Unit 5-FE - 공통 + Auth UI (US-A01, US-C01)
-- [ ] Unit 6-FE - Store/Table UI (US-A05, US-A03)
-- [ ] Unit 7-FE - Menu UI (US-A04, US-C02)
-- [ ] Unit 8-FE - Order + Dashboard UI (US-C03, US-C04, US-C05, US-A02)
+- [x] Unit 5-FE - 공통 + Auth UI (US-A01, US-C01) ✅ 60 tests passed
+- [x] Unit 6-FE - Store/Table UI (US-A05, US-A03) ✅ 25 new tests
+- [x] Unit 7-FE - Menu UI (US-A04, US-C02) ✅ No tests (사용자 요청)
+- [x] Unit 8-FE - Order + Dashboard UI (US-C03, US-C04, US-C05, US-A02) ✅ No tests
 
 #### Integration
 - [ ] Build and Test (Backend + Frontend 통합)
